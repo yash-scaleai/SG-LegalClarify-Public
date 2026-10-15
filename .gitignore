@@ -8,7 +8,7 @@ __pycache__/
 .venv/
 
 logs/
-results*/
+/results*/
 data/experiment_cot_*.jsonl
 
 .DS_Store
