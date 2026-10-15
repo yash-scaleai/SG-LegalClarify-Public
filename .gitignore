@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+credentials/
+
+__pycache__/
+*.py[cod]
+.venv/
+
+logs/
+results*/
+data/experiment_cot_*.jsonl
+
+.DS_Store

@@ -1,0 +1,55 @@
+{{ bos_token }}
+{%- set ns = namespace(first_user_prefix="") -%}
+{%- if messages[0]['role'] == 'system' -%}
+    {%- if messages[0]['content'] is string -%}
+        {%- set ns.first_user_prefix = messages[0]['content'] + '\n\n' -%}
+    {%- else -%}
+        {%- set ns.first_user_prefix = messages[0]['content'][0]['text'] + '\n\n' -%}
+    {%- endif -%}
+    {%- set loop_messages = messages[1:] -%}
+{%- else -%}
+    {%- set loop_messages = messages -%}
+{%- endif -%}
+{%- if tools -%}
+    {%- set ns.first_user_prefix = ns.first_user_prefix ~ "You have access to the following functions. To call one or more, reply with ONLY a ```tool_code``` block containing Python call(s), e.g.:\n```tool_code\n" ~ tools[0].function.name ~ "(arg=\"value\")\n```\nEach call's result is returned to you in a ```tool_output``` block; use those results to write your final answer (with no tool_code block).\n\nAvailable functions:\n" -%}
+    {%- for t in tools -%}
+        {%- set ns.first_user_prefix = ns.first_user_prefix ~ "- " ~ t.function.name ~ "(" -%}
+        {%- for pname, pdef in (t.function.parameters.properties or {}).items() -%}
+            {%- set ns.first_user_prefix = ns.first_user_prefix ~ pname ~ ": " ~ (pdef.type | default("any")) ~ (", " if not loop.last else "") -%}
+        {%- endfor -%}
+        {%- set ns.first_user_prefix = ns.first_user_prefix ~ "): " ~ (t.function.description | default("")) ~ "\n" -%}
+    {%- endfor -%}
+    {%- set ns.first_user_prefix = ns.first_user_prefix ~ "\n" -%}
+{%- endif -%}
+{%- for message in loop_messages -%}
+    {%- if message['role'] == 'assistant' -%}
+        {%- set role = "model" -%}
+    {%- elif message['role'] == 'tool' -%}
+        {%- set role = "user" -%}
+    {%- else -%}
+        {%- set role = message['role'] -%}
+    {%- endif -%}
+    {{ '<start_of_turn>' + role + '\n' + (ns.first_user_prefix if loop.first else "") }}
+    {%- if message['role'] == 'tool' -%}
+        {{ '```tool_output\n' + (message['content'] | string | trim) + '\n```' }}
+    {%- elif message['role'] == 'assistant' and message['tool_calls'] -%}
+        {%- if message['content'] -%}{{ (message['content'] | trim) ~ '\n' }}{%- endif -%}
+        {{ '```tool_code\n' }}
+        {%- for tc in message['tool_calls'] -%}
+            {{ tc['function']['name'] ~ "(" ~ (tc['function']['arguments'] | string) ~ ")\n" }}
+        {%- endfor -%}
+        {{ '```' }}
+    {%- elif message['content'] is string -%}
+        {{ message['content'] | trim }}
+    {%- elif message['content'] is iterable -%}
+        {%- for item in message['content'] -%}
+            {%- if item['type'] == 'image' -%}{{ '<start_of_image>' }}
+            {%- elif item['type'] == 'text' -%}{{ item['text'] | trim }}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+    {{ '<end_of_turn>\n' }}
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+    {{'<start_of_turn>model\n'}}
+{%- endif -%}

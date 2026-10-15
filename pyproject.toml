@@ -1,0 +1,13 @@
+[project]
+name = "sg-legalclarify"
+version = "0.1.0"
+description = "Multi-turn evaluation of clarifying questions on underspecified Singapore legal questions"
+requires-python = "==3.10.*"
+dependencies = [
+    "openai==3.6.0",
+    "openpyxl==3.1.5",
+    "requests==2.32.5",
+    "python-dotenv==1.2.1",
+    "Brotli==1.2.0",
+    "tiktoken==0.12.0",
+]
