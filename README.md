@@ -1,8 +1,5 @@
 # SG-LegalClarify
 
-Code for evaluating whether language models ask clarifying questions before answering
-underspecified Singapore legal questions.
-
 Paper: [arXiv link TBD]
 
 For each scenario, the model under test first decides whether the user's question gives
