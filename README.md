@@ -82,6 +82,19 @@ Generation writes one chain-of-thought JSONL per process under `data/`, one reco
 trial, with per-turn reasoning, the simulator selections and, for web-search runs, every
 search and page visit.
 
+## Model outputs
+
+The paper's graded results (about 1.8 GB) are not in this repo. They are stored in S3
+under `s3://scaleapi-results/slprep/sg-legalclarify/model-outputs/`, with one folder per
+run: `results_paper_run_{1,2,3}` closed-book and `results_paper_run_{1,2,3}_web_search`
+with web search. Each folder holds the 930 scenario directories in the format above.
+
+Download them with the AWS CLI (requires read access to the bucket):
+
+```bash
+aws s3 sync s3://scaleapi-results/slprep/sg-legalclarify/model-outputs/ model-outputs/
+```
+
 ## Citation
 
 TBD

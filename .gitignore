@@ -12,3 +12,5 @@ logs/
 data/experiment_cot_*.jsonl
 
 .DS_Store
+
+/model-outputs/
