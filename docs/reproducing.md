@@ -72,7 +72,7 @@ SHARED_MODELS="anthropic/claude-fable-5 anthropic/claude-opus-4-8 anthropic/clau
   gemini/gemini-3.1-pro-preview gemini/gemini-3.5-flash fireworks_ai/qwen3p7-plus
   fireworks_ai/kimi-k2p6 fireworks_ai/kimi-k3 fireworks_ai/deepseek-v4-pro-0813
   fireworks_ai/deepseek-v4-flash-0731 mistral/mistral-large-latest
-  fireworks_ai/deployed/t5cvm6h4 bedrock/us.meta.llama4-scout-17b-instruct-v1:0
+  fireworks_ai/deployed/your-deployment-id bedrock/us.meta.llama4-scout-17b-instruct-v1:0
   sea-lion-v4.5-27b gemma-sea-lion-v4-27b"
 ```
 
@@ -159,11 +159,15 @@ What `run_eval.py` sends to each model. The source of truth is `_build_llm_reque
 | DeepSeek V4 Pro | `fireworks_ai/deepseek-v4-pro`, `…-0813` | LiteLLM (Fireworks) | no |
 | DeepSeek V4 Flash | `fireworks_ai/deepseek-v4-flash`, `…-0731` | LiteLLM (Fireworks) | no |
 | Mistral 3 Large | `mistral/mistral-large-latest` | LiteLLM | no |
-| Qwen3.6 27B | `fireworks_ai/deployed/t5cvm6h4` | LiteLLM (dedicated Fireworks deployment) | yes |
+| Qwen3.6 27B | `fireworks_ai/deployed/your-deployment-id` | LiteLLM (dedicated Fireworks deployment) | yes |
 | Llama 4 Scout | `groq/meta-llama/llama-4-scout-17b-16e-instruct`, `bedrock/us.meta.llama4-scout-17b-instruct-v1:0` | LiteLLM | yes |
 | Gemma 3 27B | `bedrock/google.gemma-3-27b-it` (closed-book), `gemma-3-27b-it` (local, web search) | LiteLLM / vLLM | yes |
 | Qwen-SEA-LION v4.5 27B | `sea-lion-v4.5-27b` | vLLM | yes |
 | Gemma-SEA-LION v4 27B | `gemma-sea-lion-v4-27b` | vLLM | yes |
+
+The paper ran Qwen3.6 27B on a dedicated Fireworks deployment. To run it, create your
+own deployment and replace `your-deployment-id` with its id in `run_eval.MODELS`,
+`web_search/config.py` and the commands above.
 
 ### Closed-book settings
 

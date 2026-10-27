@@ -91,7 +91,7 @@ MODELS = {
     "fireworks_ai/deepseek-v4-flash": {"label": "DeepSeek V4 Flash", "default": False},
     "fireworks_ai/deepseek-v4-flash-0731": {"label": "DeepSeek V4 Flash"},
     "mistral/mistral-large-latest": {"label": "Mistral 3 Large"},
-    "fireworks_ai/deployed/t5cvm6h4": {"label": "Qwen3.6 27B"},
+    "fireworks_ai/deployed/your-deployment-id": {"label": "Qwen3.6 27B"},
     "bedrock/google.gemma-3-27b-it": {"label": "Gemma 3 27B"},
     "groq/meta-llama/llama-4-scout-17b-16e-instruct": {"label": "Llama 4 Scout", "default": False},
     "bedrock/us.meta.llama4-scout-17b-instruct-v1:0": {"label": "Llama 4 Scout"},

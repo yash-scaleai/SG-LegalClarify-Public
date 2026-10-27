@@ -1,15 +1,44 @@
 from __future__ import annotations
 
+import os
 import re
+from pathlib import Path
 from typing import Any
 
 import pyarrow.parquet as pq
-from huggingface_hub import hf_hub_download
+import requests
 
 DATASET_REPO_ID = "ScaleAI/SG-LegalClarify"
 # Pinned so a later edit to the dataset cannot silently change what a run evaluates.
 DATASET_REVISION = "c9c64a42aa9350eb9d5e67b51109b21b571e110a"
 DATASET_FILE = "data/test.parquet"
+CACHE_DIR = Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache")) / "sg-legalclarify"
+
+
+def _hf_token() -> str | None:
+    """HF_TOKEN, else the token saved by `hf auth login`. Only needed while the dataset is private."""
+    token = os.getenv("HF_TOKEN")
+    if token:
+        return token
+    token_file = Path(os.getenv("HF_HOME", Path.home() / ".cache" / "huggingface")) / "token"
+    return token_file.read_text().strip() if token_file.is_file() else None
+
+
+def _download_dataset(repo_id: str, revision: str) -> Path:
+    """Fetch the dataset parquet once per revision and reuse the cached copy afterwards."""
+    path = CACHE_DIR / repo_id.replace("/", "__") / revision / DATASET_FILE
+    if path.is_file():
+        return path
+    url = f"https://huggingface.co/datasets/{repo_id}/resolve/{revision}/{DATASET_FILE}"
+    token = _hf_token()
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    resp = requests.get(url, headers=headers, timeout=60)
+    resp.raise_for_status()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_bytes(resp.content)
+    tmp.replace(path)
+    return path
 
 
 def _to_str(value: Any) -> str:
@@ -107,8 +136,7 @@ def load_scenarios(
     revision: str = DATASET_REVISION,
 ) -> dict[str, dict]:
     """Download the dataset from the Hugging Face Hub (cached locally) and build scenarios."""
-    path = hf_hub_download(repo_id, DATASET_FILE, repo_type="dataset", revision=revision)
-    rows = pq.read_table(path).to_pylist()
+    rows = pq.read_table(_download_dataset(repo_id, revision)).to_pylist()
 
     scenarios: dict[str, dict] = {}
     for row in rows:

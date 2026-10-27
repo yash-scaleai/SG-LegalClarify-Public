@@ -1,0 +1,7 @@
+- id: SEC-004
+  finding: "Personal author emails in git commit metadata"
+  severity: MEDIUM
+  rationale: "Commit authorship by the paper authors is intended attribution"
+  approved_by: "yash.maurya@scale.com"
+  approved_on: 2026-10-26
+  expires: 2027-10-26

@@ -39,7 +39,7 @@ CUSTOM_WEB_SEARCH_MODELS: List[str] = [
     "fireworks_ai/kimi-k3",
     "fireworks_ai/deepseek-v4-flash-0731",
     "mistral/mistral-large-latest",
-    "fireworks_ai/deployed/t5cvm6h4",                      # Qwen3.6 27B (Fireworks-deployed)
+    "fireworks_ai/deployed/your-deployment-id",            # Qwen3.6 27B (Fireworks-deployed)
     "groq/meta-llama/llama-4-scout-17b-16e-instruct",
     "bedrock/us.meta.llama4-scout-17b-instruct-v1:0",
     # Local vLLM models. Qwen-SEA-LION: vLLM's built-in qwen3_xml parser. Gemma-SEA-LION and
@@ -79,7 +79,7 @@ FORCE_TOOL_CHOICE_SUPPORT: Dict[str, str] = {
     "fireworks_ai/kimi-k3":            "native",
     "fireworks_ai/deepseek-v4-flash-0731":  "native",
     "mistral/mistral-large-latest":    "native",
-    "fireworks_ai/deployed/t5cvm6h4":  "bypass",
+    "fireworks_ai/deployed/your-deployment-id":  "bypass",
     # Bedrock Llama models reject tool_choice at the API level → wording-only
 }
 
