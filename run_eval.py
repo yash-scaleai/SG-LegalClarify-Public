@@ -9,7 +9,7 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Optional
 from openai import OpenAI
-from excel_scenarios import load_scenarios_from_excel
+from scenarios import load_scenarios
 from user_simulator import (
     classify_assistant_message,
     simulate_user_response,
@@ -186,11 +186,11 @@ EXPERIMENT_COT_JSONL_DIR = Path(os.getenv("EXPERIMENT_COT_JSONL_DIR",
 
 # Scenario source and selection config.
 # Guarded so importing this module (e.g. to reuse run_conversation from other
-# scripts) does not crash when the default sheet/headers are absent.
+# scripts) does not crash when the dataset cannot be downloaded.
 try:
-    SCENARIOS = load_scenarios_from_excel()
+    SCENARIOS = load_scenarios()
 except Exception as _scenario_load_error:  # noqa: BLE001
-    print(f"[warn] could not preload scenarios from Excel: {_scenario_load_error}")
+    print(f"[warn] could not load scenarios from the Hugging Face dataset: {_scenario_load_error}")
     SCENARIOS = {}
 
 # Top-level results config: generated JSON/HTML go under this root by scenario.
@@ -1531,7 +1531,7 @@ def main():
 
     scenario_keys = list(SCENARIOS.keys())
     if not scenario_keys:
-        parser.error("No scenarios loaded from the dataset (see excel_scenarios.py).")
+        parser.error("No scenarios loaded from the dataset (see scenarios.py).")
     if args.num_shards < 1:
         parser.error(f"--num-shards must be >= 1 (got {args.num_shards}).")
     if args.shard_index < 1 or args.shard_index > args.num_shards:

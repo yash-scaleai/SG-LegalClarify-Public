@@ -14,7 +14,7 @@ the scenario's rubric by a panel of three LLM judges.
 |---|---|
 | `run_eval.py` | Generates the conversations: gate, multi-turn loop, model routing, result files. |
 | `user_simulator.py` | Tool-gated user simulator (fact selector, answer rendering, handoff) and turn classifier. |
-| `excel_scenarios.py` | Loads scenarios, rubrics and ground-truth variables from `SG-LegalClarify_public.xlsx`. |
+| `scenarios.py` | Loads scenarios, rubrics and ground-truth variables from the Hugging Face dataset. |
 | `web_search/` | Web search for the model under test (`--web-search`). See its README. |
 | `scripts/run_paper_3seeds.sh` | Runs the full sweep for seeds 42, 43 and 44. |
 | `scripts/run_sharded_experiment.sh` | Runs one seed as N parallel shards, after a preflight check. |
@@ -36,10 +36,12 @@ needs keys for the providers you want to run. Model ids in `run_eval.MODELS` are
 route names. `docs/reproducing.md` lists every model, its route and the settings
 sent to it.
 
-The public split is `SG-LegalClarify_public.xlsx`: 550 of the 1,100 source questions
-(half of each category, with every underspecified question kept with its fully specified
-counterpart), giving 930 evaluation instances. The other half is held out for private
-evaluation.
+The public split is the Hugging Face dataset
+[`ScaleAI/SG-LegalClarify`](https://huggingface.co/datasets/ScaleAI/SG-LegalClarify):
+550 of the 1,100 source questions (half of each category, with every underspecified
+question kept with its fully specified counterpart), giving 930 evaluation instances. The
+other half is held out for private evaluation. `run_eval.py` downloads it on first use and
+caches it; `scenarios.py` pins the dataset revision so runs stay reproducible.
 
 ## Quick start
 
